@@ -1,38 +1,25 @@
-"""
-Sistema de controle de estoque.
-"""
-from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
 
-
-@dataclass
 class Produto:
-    """Representação básica de um produto no estoque."""
+    def __init__(self, nome, quantidade, preco_unitario, validade):
+        self.nome = nome
+        self.quantidade = quantidade
+        self.preco_unitario = preco_unitario
+        self.validade = validade
 
-    codigo: str
-    nome: str
-    preco: float
-    quantidade: int = 0
-    data_validade: Optional[datetime] = None
-    estoque_minimo: int = 10
+    def adicionar_estoque(self, quantidade):
+        self.quantidade += quantidade
 
-    def adicionar_estoque(self, quantidade: int) -> None:
-        """Adiciona quantidade ao estoque do produto."""
-        raise NotImplementedError()
+    def remover_estoque(self, quantidade):
+        if quantidade > self.quantidade:
+            raise ValueError("Estoque insuficiente")
+        self.quantidade -= quantidade
 
-    def remover_estoque(self, quantidade: int) -> bool:
-        """Remove quantidade do estoque do produto."""
-        raise NotImplementedError()
+    def alerta_estoque_baixo(self):
+        return self.quantidade < 5
 
-    def verificar_estoque_baixo(self) -> bool:
-        """Verifica se o estoque está abaixo do mínimo."""
-        raise NotImplementedError()
+    def valor_total(self):
+        return self.quantidade * self.preco_unitario
 
-    def calcular_valor_total(self) -> float:
-        """Calcula o valor total do produto em estoque."""
-        raise NotImplementedError()
-
-    def verificar_validade(self) -> bool:
-        """Verifica se o produto está dentro da validade."""
-        raise NotImplementedError() 
+    def esta_vencido(self):
+        return datetime.now().date() > self.validade
